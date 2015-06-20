@@ -1,0 +1,8 @@
+--file-path
+\\atltruck\Products\IDKs\Mainline\DesktopIDKs\DesktopIDKs_2014-11-22_0346_b2638
+--file-path-format
+\\atltruck\Products\IDKs\{version}\{productname}\{build}
+--source-directory
+\\atltruck\Products\IDKs\Mainline\DesktopIDKs
+--target-directory
+F:\TEMP\DesktopIDKs

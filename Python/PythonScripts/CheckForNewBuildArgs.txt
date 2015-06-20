@@ -1,0 +1,6 @@
+--source
+F:\TEMP\FetchBuilds\Source
+--target
+F:\TEMP\FetchBuilds\Target
+--pattern
+*\*.iso

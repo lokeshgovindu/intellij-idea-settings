@@ -1,0 +1,6 @@
+--name
+Lokesh Govindu
+--age
+30
+--hometown
+Uppalur
