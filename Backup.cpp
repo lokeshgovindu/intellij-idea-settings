@@ -2499,6 +2499,58 @@ private:
 };
 
 //______________________________________________________________________________________________________________________
+
+template<typename T>
+struct SubsetSum {
+    std::vector<T> vi;
+
+    SubsetSum(const std::vector<T> &_vi) {
+        this->vi = _vi;
+    }
+
+    bool solve(T sum) {
+        int n = (int) vi.size();
+
+        // The value of subset[i][j] will be true if there is a subset of
+        // set[0..j-1] with sum equal to i
+        std::vector<std::vector<bool>> subset(sum + 1, std::vector<bool>(n + 1, false));
+
+        // If sum is 0, then answer is true
+        FORN(i, 0, n) subset[0][i] = true;
+
+        // If sum is not 0 and set is empty, then answer is false
+        FORN(i, 1, sum) subset[i][0] = false;
+
+        // Fill the subset table in bottom up manner
+        FORN(i, 1, sum) {
+            FORN(j, 1, n) {
+                subset[i][j] = subset[i][j - 1] ||
+                               (i >= vi[j - 1] ? subset[i - vi[j - 1]][j - 1] : subset[i][j - 1]);
+            }
+        }
+
+        // Change if condition to true to print table.
+        if (false) {
+            printf_s("     |     ");
+            FOR(j, n) printf_s("%4d", vi[j]);
+            printf_s("\n");
+            printf_s(" Sum | ");
+            FORN(j, 0, n) printf_s("%4d", j);
+            printf_s("\n");
+            printf_s("----------------------------------------------------------------------\n");
+            FORN(i, 0, sum) {
+                printf_s("%4d | ", i);
+                FORN(j, 0, n) {
+                    printf_s("%4d", subset[i][j] ? 1 : 0);
+                }
+                printf_s("\n");
+            }
+        }
+
+        return subset[sum][n];
+    }
+};
+
 //______________________________________________________________________________________________________________________
 //______________________________________________________________________________________________________________________
 //______________________________________________________________________________________________________________________
