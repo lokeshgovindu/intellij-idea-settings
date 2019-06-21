@@ -1316,6 +1316,33 @@ std::string ToRadix(T value, int radix)
 	return ret.empty() ? "0" : ret;
 }
 
+int GetCoinChanges(const vector<int>& vi, int n)
+{
+	// We need n + 1 rows as the table is constructed in bottom up 
+	// manner using the base case 0 value case (n = 0)
+	vector<vector<int>> dp(n + 1, vector<int>(vi.size()));
+
+	int m = (int) vi.size();
+
+	// Fill the entries for 0 value case (n = 0) 
+	for (int i = 0; i < m; ++i) dp[0][i] = 1;
+
+	// Fill rest of the table entries in bottom up manner  
+	for (int i = 1; i <= n; ++i) {
+		for (int j = 0; j < m; ++j) {
+			// Count of solutions including vs[j] 
+			int x = (i - vi[j] >= 0) ? dp[i - vi[j]][j] : 0;
+
+			// Count of solutions excluding vs[j]
+			int y = (j >= 1) ? dp[i][j - 1] : 0;
+
+			// total count 
+			dp[i][j] = x + y;
+		}
+	}
+	return dp[n][m - 1];
+}
+
 //
 // :::~numeric
 //
