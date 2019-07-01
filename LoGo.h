@@ -25,9 +25,19 @@
 #define LGCHR(x)						#@x
 #define LGSTR_(x)						#x
 #define LGSTR(x)						LGSTR_(x)
+#define LGWSTR_(x)						L###x
+#define LGWSTR(x)						LGWSTR_(x)
 #define LGCAT(x, y)						x##y
 
-#pragma message("[INFO] *** Including [" __FILE__ "] header file at Line #" LGSTR(__LINE__) " ***")
+#ifndef _UNICODE
+#define LGTSTR(str)						LGSTR(str)
+#else
+#define LGTSTR(str)						LGWSTR(str)
+#endif	// _UNICODE
+
+#pragma message("[INFO] ------------------------------------------------------------------------")
+#pragma message("[INFO] *** Including [" __FILE__ "] header file ***")
+#pragma message("[INFO] ------------------------------------------------------------------------")
 
 /*****************************************************************************/
 
@@ -40,6 +50,16 @@
 
 #include <windows.h>
 
+/*****************************************************************************/
+
+// Constants
+
+#define MPI							3.14159265358979323846264338327950288419716939937510
+#define LGLINE						"---------------------------------------------------------------------------------------------------"
+#define LGLINEA						"---------------------------------------------------------------------------------------------------"
+#define LGLINEW						L"---------------------------------------------------------------------------------------------------"
+
+
 // C Macros
 #define LGPRINT_INT(x)				printf_s("%s = [%d]\n",		LGSTR(x), x)
 #define LGPRINT_UINT(x)				printf_s("%s = [%u]\n",		LGSTR(x), x)
@@ -50,6 +70,17 @@
 #define LGPRINT_HEX(x)				printf_s("%s = [%#x]\n",	LGSTR(x), x)
 #define LGPRINT_OCT(x)				printf_s("%s = [%#o]\n",	LGSTR(x), x)
 #define LGPRINT_PTR(x)				printf_s("%s = [%#x]\n",	LGSTR(x), x)
+
+// Celsius(°C) / Fahrenheit(°F) Conversion
+#define FTOC(f)						((((f) - 32.0) * 5.0) / 9.0)
+#define CTOF(c)						((((c) * 9.0) / 5.0) + 32.0)
+
+#define DEG_TO_RAD(deg)				((deg * 2.0 * MPI) / 360.0)
+#define RAD_TO_DEG(rad)				((360.0 / ( 2.0 * MPI)) * rad)
+
+#define ARRAY_SIZE(A)				(sizeof(A) / sizeof(A[0]))
+#define SIZE_ARRAY(A)				(sizeof(A) / sizeof(A[0]))
+
 
 /* Built-in data-types in C/C++ */
 
@@ -73,20 +104,40 @@ typedef unsigned char				Boolean;
 #define MAX_STRING_LEN				256
 #endif
 typedef char						String[MAX_STRING_LEN];
-#endif
+#endif /* __cplusplus */
 
 /*****************************************************************************/
+
+
+#if !defined(__cplusplus)
+
+#define FOR(i, n)					for (int i = 0; i < (n); ++i)
+#define FORR(i, n)					for (int i = n - 1; i >= 0; --i)
+#define FORN(i, x, n)				for (int i = x; i <= (n); ++i)
+#define FORU(i, x, n)				for (int i = x; i <= (n); ++i)
+#define FORD(i, n, x)				for (int i = n; i >= (x); --i)
+#define FORX(i, a, b, inc)			for (int i = a; i <= (b); i += (inc))
+
+#define FORI(N)						FOR(i, N)
+#define FORJ(N)						FOR(j, N)
+#define FORK(N)						FOR(k, N)
+
+#define FORRI(N)					FORR(i, N)
+#define FORRJ(N)					FORR(j, N)
+#define FORRK(N)					FORR(k, N)
 
 //-----------------------------------------------------------------------------
 // C++ starts here!
 //-----------------------------------------------------------------------------
 
-#if defined(__cplusplus)
+#else /* __cplusplus */
 
 #include <vector>
 #include <list>
 #include <map>
+#include <unordered_map>
 #include <set>
+#include <unordered_set>
 #include <queue>
 #include <deque>
 #include <stack>
@@ -110,7 +161,7 @@ typedef char						String[MAX_STRING_LEN];
 #define LOGO_NS			LoGo
 #define LOGO_NS_BEGIN	namespace LOGO_NS {
 #define LOGO_NS_END		}
-#define USE_LOGO_NS		using namespace LOGO_NS;
+#define LOGO_NS_USE		using namespace LOGO_NS;
 
 typedef bool									Boolean;
 
@@ -146,20 +197,18 @@ typedef std::wstring				String;
 typedef std::wstring				tstring;
 #endif	// _UNICODE
 
-
 typedef std::vector<tstring>		VTS;
 
 /*****************************************************************************/
 
-#define MPI							3.14159265358979323846264338327950288419716939937510
-
-/*****************************************************************************/
+#define LGSCOPEDTIMER(st)			LOGO_NS::ScopedTimer st(__FUNCTION__)
 
 #define SIZE(C)						C.size()
 #define ALL(C)						(C).begin(), (C).end()
 #define ARRAY_SIZE(A)				(sizeof(A) / sizeof(A[0]))
 #define SIZE_ARRAY(A)				(sizeof(A) / sizeof(A[0]))
 #define ALL_ARRAY(A)				(A), (A) + ARRAY_SIZE(A)
+#define ARRAY_ALL(A)				(A), (A) + ARRAY_SIZE(A)
 
 //#define FOREACH(T, it, C)			for (T::iterator it = (C).begin(); it != (C).end(); ++it)
 
@@ -187,13 +236,14 @@ typedef std::vector<tstring>		VTS;
 #define FORJ(N)						FOR(j, N)
 #define FORK(N)						FOR(k, N)
 
+#define FORCI(C)					FORC(i, C)
+#define FORCJ(C)					FORC(j, C)
+#define FORCK(C)					FORC(k, C)
+
 #define FORRI(N)					FORR(i, N)
 #define FORRJ(N)					FORR(j, N)
 #define FORRK(N)					FORR(k, N)
 
-
-#define DEG_TO_RAD(deg)				((deg * 2.0 * MPI) / 360.0)
-#define RAD_TO_DEG(rad)				((360.0 / ( 2.0 * MPI)) * rad)
 
 #define TIME(t)						clock_t t = clock()
 #define TIME_DIFF(t1, t2)			(1.0 * abs(t2 - t1) / CLOCKS_PER_SEC)
@@ -202,8 +252,9 @@ typedef std::vector<tstring>		VTS;
 #define FIND(c, v)					(find(c.begin(), c.end(), v) != c.end())
 #define SWAP(x, y)					(x) ^= (y) ^= (x) ^= (y)
 
-#define LINE						tcout << "---------------------------------------------------------------------------------------------------" << endl
-#define	CRLF						tcout << endl
+#define LGPRINT_LINE				cout << LGLINE << endl
+#define	LGPRINT_CRLF				cout << endl
+
 #define READ_NUMBER(num)			cin >> num;
 #define READ_STRING(S)				\
 	cin.ignore();					\
@@ -242,47 +293,37 @@ typedef std::vector<tstring>		VTS;
 			  << (e) << ", " << (f) << ", " << (g) << ", " << (h) << ", "	\
 			  << (i) << std::endl
 
-#define LGPRINT(x)	std::cout << LGSTR(x) << " = [" << (x) << "]" << std::endl
-#define LGPRINT1(x)	std::cout << LGSTR(x) << " = [" << (x) << "]" << std::endl
+#define LGPRINT_FMT(x)	LGSTR(x) " = [" << (x) << "]"
+#define LGPRINT_SEP		", "
 
-#define LGPRINT2(a, b)										\
-	std::cout												\
-		<< LGSTR(a) << " = [" << (a) << "], "				\
-		<< LGSTR(b) << " = [" << (b) << "]" << std::endl
+#define LGPRINT(x)	std::cout << LGPRINT_FMT(x) << std::endl
+#define LGPRINT1(x)	std::cout << LGPRINT_FMT(x) << std::endl
 
-#define LGPRINT3(a, b, c)									\
-	std::cout												\
-		<< LGSTR(a) << " = [" << (a) << "], "				\
-		<< LGSTR(b) << " = [" << (b) << "], "				\
-		<< LGSTR(c) << " = [" << (c) << "]" << std::endl
+#define LGPRINT2(a, b)														\
+	std::cout																\
+		<< LGPRINT_FMT(a) << LGPRINT_SEP									\
+		<< LGPRINT_FMT(b) << std::endl
 
-#define LGPRINT4(a, b, c, d)								\
-	std::cout												\
-		<< LGSTR(a) << " = [" << (a) << "], "				\
-		<< LGSTR(b) << " = [" << (b) << "], "				\
-		<< LGSTR(c) << " = [" << (c) << "], "				\
-		<< LGSTR(d) << " = [" << (d) << "]" << std::endl
+#define LGPRINT3(a, b, c)													\
+	std::cout																\
+		<< LGPRINT_FMT(a) << LGPRINT_SEP									\
+		<< LGPRINT_FMT(b) << LGPRINT_SEP									\
+		<< LGPRINT_FMT(c) << std::endl
 
-#define LGWPRINT(x)		std::wcout << LGSTR(x) << " = [" << (x) << "]" << std::endl
-#define LGWPRINT1(x)	std::wcout << LGSTR(x) << " = [" << (x) << "]" << std::endl
+#define LGPRINT4(a, b, c, d)												\
+	std::cout																\
+		<< LGPRINT_FMT(a) << LGPRINT_SEP									\
+		<< LGPRINT_FMT(b) << LGPRINT_SEP									\
+		<< LGPRINT_FMT(c) << LGPRINT_SEP									\
+		<< LGPRINT_FMT(d) << std::endl
 
-#define LGWPRINT2(a, b)										\
-	std::cout												\
-		<< LGSTR(a) << " = [" << (a) << "], "				\
-		<< LGSTR(b) << " = [" << (b) << "]" << std::endl
-
-#define LGWPRINT3(a, b, c)									\
-	std::cout												\
-		<< LGSTR(a) << " = [" << (a) << "], "				\
-		<< LGSTR(b) << " = [" << (b) << "], "				\
-		<< LGSTR(c) << " = [" << (c) << "]" << std::endl
-
-#define LGWPRINT4(a, b, c, d)								\
-	std::cout												\
-		<< LGSTR(a) << " = [" << (a) << "], "				\
-		<< LGSTR(b) << " = [" << (b) << "], "				\
-		<< LGSTR(c) << " = [" << (c) << "], "				\
-		<< LGSTR(d) << " = [" << (d) << "]" << std::endl
+#define LGPRINT5(a, b, c, d, e)												\
+	std::cout																\
+		<< LGPRINT_FMT(a) << LGPRINT_SEP									\
+		<< LGPRINT_FMT(b) << LGPRINT_SEP									\
+		<< LGPRINT_FMT(c) << LGPRINT_SEP									\
+		<< LGPRINT_FMT(d) << LGPRINT_SEP									\
+		<< LGPRINT_FMT(e) << std::endl
 
 /*****************************************************************************/
 
@@ -332,7 +373,166 @@ typedef std::vector<tstring>		VTS;
 #endif
 
 
+#define LGTRYCATCH(expression)												\
+	try {																	\
+		expression;															\
+	}																		\
+	catch(std::exception& ex) {												\
+		printf_s("Exception @ Func: %s, Line: %d : %s\n",					\
+			__FUNCTION__, __LINE__, ex.what());								\
+	}
+
+
 LOGO_NS_BEGIN
+
+//
+// :::Declarations
+// 
+/*****************************************************************************/
+/*                         Function Declarations                             */
+/*****************************************************************************/
+
+template<typename T> std::string GetTypeName (const T& obj);
+template<typename T> std::string GetClassName(const T& obj);
+
+static std::ostream& operator << (std::ostream& out, const std::wstring& wstr);
+static std::ostream& operator << (std::ostream& out, const wchar_t* wstr);
+
+template<typename T> std::ostream& operator << (std::ostream& out, const std::vector<T>& V);
+#ifndef LGDONOTUSEQUOTESFORSTRINGS
+template<>    static std::ostream& operator << (std::ostream& out, const std::vector<std::string>& V);
+#endif // LGDONOTUSEQUOTESFORSTRINGS
+
+template<typename T> std::ostream& operator << (std::ostream& out, const std::set<T>& st);
+
+template<typename T1, typename T2> std::ostream& operator << (std::ostream& out, const std::pair<T1, T2>& pr);
+template<typename T1, typename T2> std::ostream& operator << (std::ostream& out, const std::map<T1, T2>& mp);
+
+template<class T> void UNQ(T& x);
+
+//
+// :::Numbers / :::Numeric
+//
+
+static bool IsLeap(Int32 y);
+
+template<typename T> int Sign(T val);
+static int Sign(const char* szVal);
+static int Sign(const std::string& val);
+
+template<typename T> T Reverse(T N);
+template<typename T> bool HasAllOddDigits(T n);
+template<typename T> bool HasAllEvenDigits(T n);
+
+static bool IsNumber(const std::string& s);
+
+template<typename T> int BitCount(T n);
+template<typename T> int BinaryCardinality(T n);
+template<typename T> int DigitCount(T N);
+
+static int numcmp(const std::string& a, const std::string& b);
+static std::string Sum(std::string x, std::string y);
+static std::string Sub(std::string x, std::string y);
+template<typename T> bool IsPandigital(const T& N);
+static bool IsPandigital(const std::string& s, int begin = 0, int end = -1);
+static bool IsPandigital(const char* s);
+
+static bool ASubsetOfB(unsigned int A, unsigned int B);
+template<typename T> T Factorial(const T& n);
+template<typename T> T NCR(T n, T r);
+template<typename T> bool IsBouncy(T n);
+template<typename T> bool IsIncreasingNumber(T n);
+template<typename T> bool IsStrictlyIncreasingNumber(T n);
+template<typename T> bool IsDecreasingNumber(T n);
+template<typename T> bool IsStrictlyDecreasingNumber(T n);
+template<typename T> T NCR(int N, int R);
+template<typename T> int GetNumberOfDigits(T N);
+template<typename T> T GCD(const T& a, const T& b);
+template<> UInt64 GCD(const UInt64& a, const UInt64& b);
+//template<> UInt64 GCD(const UInt64& a, const UInt64& b);
+template<typename T> T LCM(const T& a, const T& b);
+template<typename T> int GetDigitsSum(T N);
+static int GetDigitsSum(const std::string& S);
+template<typename T> std::string ToRadix(T value, int radix);
+
+template<typename T> void GetPrimeFactors(T n, std::map<int, int>& mp);
+template<typename T> std::vector<T> GetPrimeFactors(T n, bool duplicates = false);
+template<typename T> unsigned long GetPrimeFactorsCount(T n, bool duplicates = false);
+template<typename T> std::vector<T> GetAllFactors(T n);
+template<typename T> int GetAllFactorsCount(T n);
+template<typename T> bool IsPrime(T n);
+template<typename T> std::vector<unsigned long> GetPrimes(T N);
+
+static int CountRectangles(int W, int H, bool includeSquares = false);
+
+template <typename T> bool IsPalindrome(T n);
+
+//
+// :::~numeric
+//
+
+//
+// :::Strings
+//
+
+template<typename T> T ToLower(T s);
+template<typename T> T ToUpper(T s);
+
+static std::string ReplaceALL(std::string s, const std::string& fnd, const std::string& rep = "");
+static std::string RemoveALL(const std::string& str, const std::string& seps);
+
+static std::string GetCurrentDateTimeA();
+static std::wstring GetCurrentDateTimeW();
+
+#ifdef UNICODE
+#define GetCurrentDateTime  GetCurrentDateTimeW
+#else
+#define GetCurrentDateTime  GetCurrentDateTimeA
+#endif // !UNICODE
+
+static char* Trim(char* s);
+
+static std::string Trim	 (const std::string& str, const std::string& seps = " \t");
+static std::string TrimLeft (const std::string& str, const std::string& seps = " \t");
+static std::string TrimRight(const std::string& str, const std::string& seps = " \t");
+
+template<typename T> T ToVal(const std::string& s);
+template<typename T> std::string ToString(T x);
+template<typename T> std::string ToBinary(T N);
+template<typename Target, typename Source> Target Convert(const Source& arg);
+
+template<typename T> std::vector<T> Split(const std::string& s, const std::string& seps = " \t");
+static std::vector<std::string> Split(const std::string& s, const std::string& seps = " \t");
+
+template<typename T> std::stringstream& operator >> (std::stringstream& ss, std::vector<T>& v);
+template<typename T> std::fstream&      operator >> (std::fstream& fs, std::vector<T>& v);
+
+static bool IsPrefix(const std::string& s, const std::string& prefix);
+static bool IsSuffix(const std::string& s, const std::string& suffix);
+
+static bool ASubsetOfB(const std::string& A, const std::string& B);
+
+static bool IsPalindrome(const std::string& s);
+static bool IsPalindrome(const std::string& s, int l, int r);
+
+// 
+// :::~strings
+// 
+
+//
+// :::Algorithms
+//
+
+static std::vector<std::pair<int, int>> SpanningTree_Prims(std::vector<std::vector<int>> a);
+static std::vector<std::pair<int, int>> SpanningTree_Kruskals(std::vector<std::vector<int>> a);
+
+//
+// :::~Algorithms
+//
+
+
+template<typename T>
+std::string GetTypeName(const T& obj);
 
 /**
  * Return the type of object.
@@ -395,8 +595,15 @@ std::string GetClassName(const T& obj) {
  * 
  * std::wstring name = L"Lokesh Govindu";
  * std::cout << name << endl;
+ * std::cout << name.c_str() << endl;
  */
 std::ostream& operator << (std::ostream& out, const std::wstring& wstr)
+{
+	std::wcout << wstr;
+	return out;
+}
+
+std::ostream& operator << (std::ostream& out, const wchar_t* wstr)
 {
 	std::wcout << wstr;
 	return out;
@@ -415,12 +622,13 @@ std::ostream& operator << (std::ostream& out, const std::vector<T>& V) {
 }
 
 
+#ifndef LGDONOTUSEQUOTESFORSTRINGS
 /**
  * template specialization for std::vector<std::string>.
  * Print vector elements on stdout.
  */
 template<>
-std::ostream& operator << (std::ostream& out, const std::vector<std::string>& V) {
+static std::ostream& operator << (std::ostream& out, const std::vector<std::string>& V) {
 	if (V.empty()) return out;
 	out << "{ " << "\"" << V[0] << "\"";
 	for (size_t i = 1; i < V.size(); ++i) {
@@ -429,6 +637,22 @@ std::ostream& operator << (std::ostream& out, const std::vector<std::string>& V)
 	out << " }";
 	return out;
 }
+#endif // LGDONOTUSEQUOTESFORSTRINGS
+
+
+template<typename T>
+std::ostream& operator << (std::ostream& out, const std::set<T>& st)
+{
+	if (st.empty()) return out;
+	set<T>::iterator it = st.begin();
+	out << "{ " << *it;
+	for (++it; it != st.end(); ++it) {
+		out << ", " << *it;
+	}
+	out << " }";
+	return out;
+}
+
 
 
 /**
@@ -499,6 +723,40 @@ T ToVal(const std::string& s)
 
 
 /**
+ *  \brief Convert one type to another
+ *  
+ *  \param [in] arg Source argument
+ *  
+ *  \return Convert the given \a arg to the requested type
+ *  
+ *  \sa template<class T> T ToVal(const std::string& s)
+ *  \sa template<class T> std::string ToString(T x)
+ *  
+ *  \code
+ *  LGPRINT(Convert<std::string>(9.24));
+ *  LGPRINT(Convert<double>("9.24"));
+ *  LGPRINT(Convert<long>(924));
+ *  LGPRINT(Convert<char>(924));
+ *  
+ *  Output:
+ *  Convert<std::string>(9.24) = [9.24]
+ *  Convert<double>("9.24") = [9.24]
+ *  Convert<long>(924) = [924]
+ *  Convert<char>(924) = [9]
+ *  \endcode
+ */
+template<typename Target, typename Source>
+Target Convert(const Source& arg)
+{
+	std::stringstream ss;
+	Target ret;
+	ss << arg;
+	ss >> ret;
+	return ret;
+}
+
+
+/**
  * Convert given to binary and returns in a string.
  */
 template<class T>
@@ -516,14 +774,14 @@ std::string ToBinary(T N)
 /**
  * Checks for leap year.
  */
-bool IsLeap(Int32 y) { return (y % 4 == 0 && y % 100 != 0 || y % 400 == 0); }
+bool IsLeap(Int32 y) { return ((y % 4 == 0 && y % 100 != 0) || (y % 400 == 0)); }
 
 
 /**
  *	Splits and returns the request type of std::vector.
  */
-template <typename T>
-std::vector<T> Split(const std::string& s, const std::string& seps = " ")
+template<typename T>
+std::vector<T> Split(const std::string& s, const std::string& seps)
 {
 	std::vector<T> ret; T val;
 	for (size_t p = 0, q; p != std::string::npos; p = q) {
@@ -542,7 +800,7 @@ std::vector<T> Split(const std::string& s, const std::string& seps = " ")
 /**
  *	\brief Splits the string into vector of strings.
  */
-std::vector<std::string> Split(const std::string& s, const std::string& seps = " ")
+std::vector<std::string> Split(const std::string& s, const std::string& seps)
 {
 	std::vector<std::string> ret;
 	for (size_t p = 0, q; p != std::string::npos; p = q) {
@@ -642,7 +900,7 @@ void GetPrimeFactors(T n, std::map<int, int>& mp)
  *	\endcode
  */
 template<typename T>
-std::vector<T> GetPrimeFactors(T n, bool duplicates=false)
+std::vector<T> GetPrimeFactors(T n, bool duplicates)
 {
 	std::vector<T> ret;
 	T sqrtOfN = static_cast<T>(sqrt((double)n));
@@ -680,7 +938,7 @@ std::vector<T> GetPrimeFactors(T n, bool duplicates=false)
  *	\endcode
  */
 template<typename T>
-unsigned long GetPrimeFactorsCount(T n, bool duplicates=false)
+unsigned long GetPrimeFactorsCount(T n, bool duplicates)
 {
 	unsigned long ret = 0;
 	T sqrtOfN = static_cast<T>(sqrt((double)n));
@@ -801,15 +1059,17 @@ template <typename T>
 std::vector<unsigned long> GetPrimes(T N)
 {
 	std::vector<unsigned long> primes;
-	char* sieve = new char[N / 8 + 1];
-	memset(sieve, 0xFF, (N / 8 + 1) * sizeof(char));
-
-	for (unsigned long x = 2; x <= N; ++x) {
-		if (sieve[x / 8] & (0x01 << (x % 8))) {
+	char* sieve = new char[N / 16 + 1];
+	memset(sieve, 0xFF, (N / 16 + 1) * sizeof(char));
+	if (N >= 2) {
+		primes.push_back(2);
+	}
+	for (unsigned long x = 3; x <= N; x += 2) {
+		if (sieve[x / 16] & (0x01 << ((x / 2) % 8))) {
 			primes.push_back(x);
 			// Is prime. Mark multiplicatives.
-			for (unsigned long j = 2 * x; j <= N; j += x) {
-				sieve[j / 8] &= ~(0x01 << (j % 8));
+			for (unsigned long j = 3 * x, xx = x + x; j <= N; j += xx) {
+				sieve[j / 16] &= ~(0x01 << ((j / 2) % 8));
 			}
 		}
 	}
@@ -818,7 +1078,7 @@ std::vector<unsigned long> GetPrimes(T N)
 }
 
 
-int CountRectangles(int W, int H, bool includeSquares = false) {
+int CountRectangles(int W, int H, bool includeSquares) {
 	int ret = 0;
 	FORN(w, 1, W) FORN(h, 1, H) {
 		if (!includeSquares && w == h) continue;
@@ -845,12 +1105,12 @@ std::ostream& operator << (std::ostream& out, const Point2D<T>& pt) {
 
 typedef Point2D<double> fPoint2D;
 
-double sign(const fPoint2D& p1, const fPoint2D& p2, const fPoint2D& p3)
+static double sign(const fPoint2D& p1, const fPoint2D& p2, const fPoint2D& p3)
 {
 	return (p1.X - p3.X) * (p2.Y - p3.Y) - (p2.X - p3.X) * (p1.Y - p3.Y);
 }
 
-bool PointInTriangle(const fPoint2D& pt, const fPoint2D& v1, const fPoint2D& v2, const fPoint2D& v3)
+static bool PointInTriangle(const fPoint2D& pt, const fPoint2D& v1, const fPoint2D& v2, const fPoint2D& v3)
 {
 	bool b1, b2, b3;
 
@@ -882,7 +1142,7 @@ T Reverse(T N)
 //
 // Returns true if all digits are odd.
 // 
-template <typename T> bool HasAllOddDigits(T n)
+template<typename T> bool HasAllOddDigits(T n)
 {
 	for (; n > 0; n /= 10) {
 		if (!(n & 1)) {
@@ -896,7 +1156,7 @@ template <typename T> bool HasAllOddDigits(T n)
 //
 // Returns true if all digits are even.
 // 
-template <typename T> bool HasAllEvenDigits(T n)
+template<typename T> bool HasAllEvenDigits(T n)
 {
 	for (; n > 0; n /= 10) {
 		if (n & 1) {
@@ -906,33 +1166,159 @@ template <typename T> bool HasAllEvenDigits(T n)
 	return true;
 }
 
+/**
+ *  \brief Compares the given two number strings \a a and \a b
+ *  
+ *  \param [in] a First String
+ *  \param [in] b Second String
+ *  
+ *  \return Comparision result of given two number strings.
+ *			Returns:
+ *				< 0 => a is less than b
+ *				0   => a is equal to b
+ *				> 0 => a is greater than b
+ */
+int numcmp(const std::string& a, const std::string& b)
+{
+	std::string sa = LOGO_NS::TrimLeft(a, "0");
+	std::string sb = LOGO_NS::TrimLeft(b, "0");
+
+	if (sa == sb) { return 0; }
+
+	if (sa.size() < sb.size()) return -1;
+	if (sa.size() > sb.size()) return 1;
+
+	for (size_t i = 0; i < sa.size(); ++i) {
+		if (sa[i] != sb[i]) {
+			return sa[i] < sb[i] ? -1 : 1;
+		}
+	}
+
+	return 0;
+}
+
+
 //
 // Returns the sum of x and y
 //
-void Sum(std::string x, std::string y, std::string& ret)
+std::string Sum(std::string x, std::string y)
 {
 	using std::max;
-	int carry = 0, sum;
+	std::string	ret;
+	int			carry = 0;
+	int			sum;
+	size_t		len;
+
+	// Trim leading spaces
+	x = LOGO_NS::TrimLeft(x, "0");
+	y = LOGO_NS::TrimLeft(y, "0");
+
+	if (x.empty()) x = "0";
+	if (y.empty()) y = "0";
+
+	// Invoke subtract function if the given number is -ve.
+	if (x[0] == '-' && y[0] == '-') {
+		ret = Sum(x.substr(1), y.substr(1));
+		return ret == "0" ? ret : "-" + ret;
+	}
+	else if (x[0] == '-') {
+		return Sub(y, x.substr(1));
+	}
+	else if (y[0] == '-') {
+		return Sub(x, y.substr(1));
+	}
+
+	len = max(x.size(), y.size());
+
+	if (x.size() < len) x.insert(0, std::string(len - x.size(), '0'));
+	if (y.size() < len) y.insert(0, std::string(len - y.size(), '0'));
+	ret.resize(len);
+
+	for (int i = (int) (len - 1); i >= 0; --i) {
+		// Convert char to int using: ch & 0xf
+		sum		= (x[i] & 0xf) + (y[i] & 0xf) + carry;
+		carry	= (sum > 9 ? 1 : 0);
+		sum		= sum % 10;
+		ret[i]	= sum | 0x30;	// Convert digit to char
+	}
+
+	if (carry) ret.insert(ret.begin(), '1');
+
+	return ret;
+}
+
+
+/**
+ *  \brief Computes the subtraction of two number strings.
+ *  
+ *  \param [in] x First number
+ *  \param [in] y Second number
+ *  \return Subtraction result of x and y
+ *  
+ *  \details Details
+ */
+std::string Sub(std::string x, std::string y)
+{
+	using std::max;
+	bool		minusSign = false;
+	std::string ret;
+	int			carry = 0;
+
+	// Trim leading spaces
+	x = LOGO_NS::TrimLeft(x, "0");
+	y = LOGO_NS::TrimLeft(y, "0");
+
+	if (x.empty()) x = "0";
+	if (y.empty()) y = "0";
+
+	// Invoke sum function if the given number is -ve.
+	if (x[0] == '-' && y[0] == '-') {
+		return Sub(y.substr(1), x.substr(1));
+	}
+	else if (x[0] == '-') {
+		ret = Sum(x.substr(1), y);
+		return ret == "0" ? ret : "-" + ret;
+	}
+	else if (y[0] == '-') {
+		return Sum(x, y.substr(1));
+	}
+
+	int cmp = numcmp(x, y);
+
+	if (cmp == 0) {
+		return "0";
+	}
+	else if (cmp < 0) {
+		std::swap(x, y);
+		minusSign = true;
+	}
+
 	size_t len = max(x.size(), y.size());
 	if (x.size() < len) x.insert(0, std::string(len - x.size(), '0'));
 	if (y.size() < len) y.insert(0, std::string(len - y.size(), '0'));
 	ret.resize(len);
 
-	for (int i = len - 1; i >= 0; --i) {
-		sum		= (x[i] & 0xf) + (y[i] & 0xf) + carry;
-		carry	= (sum > 9 ? 1 : 0);
-		sum		= sum % 10;
-		ret[i]	= sum | 0x30;
+	for (int i = (int) (len - 1); i >= 0; --i) {
+		// Convert char to int using: ch & 0xf
+		int sum = (x[i] & 0xf) - (y[i] & 0xf) + carry;
+		if (sum < 0) { carry = -1; sum += 10; }
+		else		 { carry = 0; }
+		sum = sum % 10;
+		ret[i] = sum | 0x30;	// Convert digit to char
 	}
 
-	if (carry) ret.insert(ret.begin(), '1');
-}
+	// Remove leading zeros (007)
+	ret = LOGO_NS::TrimLeft(ret, "0");
+	if (ret.empty()) return "0";
 
+	if (minusSign) ret.insert(ret.begin(), '-');
+	return ret;
+}
 
 //
 // Contain all the digits 1 to 9, but not necessarily in order.
 // 
-template <typename T> bool IsPandigital(const T& N)
+template<typename T> bool IsPandigital(const T& N)
 {
 	const int SZ = 10;
 	char check[SZ] = { 1, 0 };
@@ -942,12 +1328,12 @@ template <typename T> bool IsPandigital(const T& N)
 }
 
 
-bool IsPandigital(const std::string& s, int begin = 0, int end = -1)
+bool IsPandigital(const std::string& s, int begin, int end)
 {
 	const int SZ = 10;
 	char check[SZ] = { 1, 0 };
 	size_t N = s.size();
-	if (end == -1) end = N - 1;
+	if (end == -1) end = (int) (N - 1);
 	if ((end - begin + 1) < 9 || s.size() < 9) return false;
 	FORN(i, begin, end) check[s[i] - '0'] = 1;
 	FOR(i, (int)SZ) if (!check[i]) return false;
@@ -955,18 +1341,18 @@ bool IsPandigital(const std::string& s, int begin = 0, int end = -1)
 }
 
 
-//template <> bool IsPandigital<char*>(const char*& s) {
+//template<> bool IsPandigital<char*>(const char*& s) {
 bool IsPandigital(const char* s) {
 	const int SZ = 10;
 	char check[SZ] = { 1, 0 };
-	int len = strlen(s);
+	int len = (int) strlen(s);
 	FOR(i, len) check[s[i] - '0'] = 1;
 	FOR(i, (int)SZ) if (!check[i]) return false;
 	return true;
 }
 
 
-template <class T>
+template<class T>
 void UNQ(T& x)
 {
 	sort(ALL(x));
@@ -978,6 +1364,55 @@ void UNQ(T& x)
 //
 
 /**
+ *  \brief Determines the sign of a given number
+ *  
+ *  \param [in] val Value
+ *  
+ *  \return	-1 if val is -ve
+ *			 0 if val is zero
+ *			 1 if val is +ve
+ */
+template<typename T> int Sign(T val)
+{
+	return (T(0) < val) - (val < T(0));
+}
+
+//
+// TODO: I think, it is better to create overloaded methods instead of template
+// specialization...
+//
+int Sign(const char* szVal)
+{
+	if (!IsNumber(szVal)) {
+		throw std::exception((std::string("\"") + szVal + "\" is not a number.").c_str());
+	}
+	return (szVal[0] == '-' ? -1 : 1);
+}
+
+int Sign(const std::string& val)
+{
+	if (!IsNumber(val)) {
+		throw std::exception(("\"" + val + "\" is not a number.").c_str());
+	}
+	return (val[0] == '-' ? -1 : 1);
+}
+
+
+/**
+ *  \brief Check if the given is a number
+ *  
+ *  \param [in] s String to check
+ *  
+ *  \return True if \a s is a number (int/float/double) otherwise false
+ */
+bool IsNumber(const std::string& s)
+{
+	std::regex re(R"([+-]{0,1}\d*[\.]{0,1}[\d]*)");
+	return std::regex_match(s, re);
+}
+
+
+/**
  *	\brief	Return number of 1s in \a n in binary.
  *			
  *	\param[in]	n	Number
@@ -986,7 +1421,7 @@ void UNQ(T& x)
  *	
  *	\sa GetBinaryCardinality
  */
-template <typename T>
+template<typename T>
 int BitCount(T n)
 {
 	int ret = 0;
@@ -1005,7 +1440,7 @@ int BitCount(T n)
  *	
  *	\sa BitCount
  */
-template <typename T>
+template<typename T>
 int BinaryCardinality(T n)
 {
 	return log2(n) + 1;
@@ -1023,7 +1458,7 @@ int BinaryCardinality(T n)
  *	\sa	BitCount
  *	\sa BinaryCardinality
  */
-template <typename T>
+template<typename T>
 int DigitCount(T N)
 {
 	return N ? (int)(log10(1. * max(N, -N)) + 1) : 0;
@@ -1048,7 +1483,7 @@ bool ASubsetOfB(unsigned int A, unsigned int B)
  *	
  *	\return Factorial of a given number \a n
  */
-template <typename T> T Factorial(const T& n)
+template<typename T> T Factorial(const T& n)
 {
 	return n == 0 ? 1 : n * Factorial(n - 1);
 }
@@ -1106,7 +1541,7 @@ T NCR(T n, T r)
  *	IsBouncy(155349) = [true]
  *	\endcode
  */
-template <typename T>
+template<typename T>
 bool IsBouncy(T n)
 {
 	bool increasing = false;
@@ -1148,7 +1583,7 @@ bool IsBouncy(T n)
  *	IsIncreasingNumber(924)    = [false]
  *	\endcode
  */
-template <typename T>
+template<typename T>
 bool IsIncreasingNumber(T n)
 {
 	int right = n % 10, left;
@@ -1163,7 +1598,7 @@ bool IsIncreasingNumber(T n)
 }
 
 
-template <typename T>
+template<typename T>
 bool IsStrictlyIncreasingNumber(T n)
 {
 	int right = n % 10, left;
@@ -1185,7 +1620,7 @@ bool IsStrictlyIncreasingNumber(T n)
  *	
  *	\ref https://projecteuler.net/problem=112
  */
-template <typename T>
+template<typename T>
 bool IsDecreasingNumber(T n)
 {
 	int right = n % 10, left;
@@ -1199,7 +1634,7 @@ bool IsDecreasingNumber(T n)
 	return true;
 }
 
-template <typename T>
+template<typename T>
 bool IsStrictlyDecreasingNumber(T n)
 {
 	int right = n % 10, left;
@@ -1213,7 +1648,7 @@ bool IsStrictlyDecreasingNumber(T n)
 	return true;
 }
 
-template <typename T> T NCR(int N, int R)
+template<typename T> T NCR(int N, int R)
 {
 	R = min(R, N - R);
 	std::vector<int> vi1, vi2;
@@ -1262,7 +1697,7 @@ template<typename T> T GCD(const T& a, const T& b)
 	return a == 0 ? std::max<T>(b, -b) : GCD<T>(b % a, a);
 }
 
-template<> UInt64 GCD(const UInt64& a, const UInt64& b)
+template<> static UInt64 GCD(const UInt64& a, const UInt64& b)
 {
 	return a == 0 ? b : GCD<UInt64>(b % a, a);
 }
@@ -1276,7 +1711,7 @@ template<typename T> T LCM(const T& a, const T& b)
 /**
  * \brief Compute the sum of digits in the given number.
  */
-template <typename T> int GetDigitsSum(T N)
+template<typename T> int GetDigitsSum(T N)
 {
 	return N > 0 ? N % 10 + GetDigitsSum(N / 10) : 0;
 }
@@ -1316,6 +1751,24 @@ std::string ToRadix(T value, int radix)
 	return ret.empty() ? "0" : ret;
 }
 
+/*
+ * This is the fastest method when compared to n == Reverse(n).
+ * Please do NOT make any changes.
+ */
+template <typename T> bool IsPalindrome(T n)
+{
+	T divisor = 1;
+	while (n / divisor >= 10) divisor *= 10;
+	while (n != 0) {
+		int leading = n / divisor;
+		int trailing = n % 10;
+		if (leading != trailing) return false;
+		n = (n % divisor) / 10;
+		divisor = divisor / 100;
+	}
+	return true;
+}
+
 int GetCoinChanges(const vector<int>& vi, int n)
 {
 	// We need n + 1 rows as the table is constructed in bottom up 
@@ -1352,7 +1805,7 @@ int GetCoinChanges(const vector<int>& vi, int n)
 //
 
 template<typename T>
-T ToLower(const T& s)
+T ToLower(T s)
 {
 	for (size_t i = 0; i < s.size(); ++i)
 		if (isupper(s[i]))
@@ -1361,7 +1814,7 @@ T ToLower(const T& s)
 }
 
 template<typename T>
-T ToUpper(const T& s)
+T ToUpper(T s)
 {
 	for (size_t i = 0; i < s.size(); ++i)
 		if (islower(s[i]))
@@ -1369,7 +1822,7 @@ T ToUpper(const T& s)
 	return s;
 }
 
-std::string ReplaceALL(std::string s, const std::string& fnd, const std::string& rep = "") {
+std::string ReplaceALL(std::string s, const std::string& fnd, const std::string& rep) {
 	size_t pos = 0;
 	while ((pos = s.find(fnd, pos)) != std::string::npos) {
 		s.replace(pos, fnd.size(), rep);
@@ -1408,7 +1861,7 @@ std::string GetCurrentDateTimeA()
 	if (!err) {
 		err = asctime_s(szDateTime, _countof(szDateTime), &startedInfo);
 		if (err) {
-			sprintf_s(szDateTime, "%s %d", __TIME__, __DATE__);
+			sprintf_s(szDateTime, "%s %s", __TIME__, __DATE__);
 		}
 		else {
 			szDateTime[24] = '\0';
@@ -1436,10 +1889,10 @@ std::wstring GetCurrentDateTimeW()
 	if (!err) {
 		err = _wasctime_s(szDateTime, _countof(szDateTime), &startedInfo);
 		if (err) {
-			swprintf_s(szDateTime, L"%s %d", __TIME__, __DATE__);
+			swprintf_s(szDateTime, L"%s %s", LGWSTR(__TIME__), LGWSTR(__DATE__));
 		}
 		else {
-			szDateTime[24] = '\0';
+			szDateTime[24] = L'\0';
 		}
 	}
 
@@ -1472,17 +1925,17 @@ char* Trim(char* s)
 }
 
 
-std::string Trim(const std::string& str, const std::string& whitespace = " \t")
+std::string Trim(const std::string& str, const std::string& seps)
 {
 	if (str.empty()) return str;
-	size_t p = str.find_first_not_of(whitespace);
+	size_t p = str.find_first_not_of(seps);
 	if (p == std::string::npos) return "";
-	size_t q = str.find_last_not_of(whitespace);
+	size_t q = str.find_last_not_of(seps);
 	return str.substr(p, q - p + 1);
 }
 
 
-std::string TrimLeft(const std::string& str, const std::string& seps = " \t")
+std::string TrimLeft(const std::string& str, const std::string& seps)
 {
 	if (str.empty()) return str;
 	size_t p = str.find_first_not_of(seps);
@@ -1492,7 +1945,7 @@ std::string TrimLeft(const std::string& str, const std::string& seps = " \t")
 }
 
 
-std::string TrimRight(const std::string& str, const std::string& seps = " \t")
+std::string TrimRight(const std::string& str, const std::string& seps)
 {
 	if (str.empty()) return str;
 	size_t p = 0;
@@ -1522,6 +1975,17 @@ bool ASubsetOfB(const std::string& A, const std::string& B)
 	return true;
 }
 
+bool IsPalindrome(const std::string& s) {
+	int N = (int) s.size();
+	FOR(i, N >> 1) if (s[i] != s[N - i - 1]) return false;
+	return true;
+}
+
+bool IsPalindrome(const std::string& s, int l, int r) {
+	int N = (r - l + 1) / 2;
+	FOR(i, N) if (s[l + i] != s[r - i]) return false;
+	return true;
+}
 
 // 
 // :::~strings
@@ -1625,11 +2089,11 @@ struct StreamReader
 		return true;
 	}
 
-	template <typename T> bool Read(T& t) {
+	template<typename T> bool Read(T& t) {
 		return (bool)(m_fs >> t);
 	}
 
-	template <typename T> bool Read(std::vector<std::vector<T>>& t) {
+	template<typename T> bool Read(std::vector<std::vector<T>>& t) {
 		t.clear();
 		std::vector<T> vt;
 		while (m_fs >> vt) {
@@ -1664,7 +2128,7 @@ struct StreamReader
 		return true;
 	}
 
-	template <typename T> bool Read(std::vector<std::vector<T>>& vvt, const std::string& seps) {
+	template<typename T> bool Read(std::vector<std::vector<T>>& vvt, const std::string& seps) {
 		vvt.clear();
 		std::vector<T> vt;
 		while (Read(vt, seps)) {
@@ -1674,7 +2138,7 @@ struct StreamReader
 		return true;
 	}
 
-	template <typename T> T Read() {
+	template<typename T> T Read() {
 		T t;
 		if (!(m_fs >> t)) {
 			std::string typeName = GetTypeName(t);
@@ -1731,12 +2195,12 @@ struct Roman
 		FOREACH(std::string, it, romanNumeral) {
 			decltype(*it) ch = *it;
 #endif
-			ch = toupper(ch);
-			ret += Get(ch);
-			if (prev && Get(prev) < Get(ch)) {
+			auto cht = toupper(ch);
+			ret += Get(cht);
+			if (prev && Get(prev) < Get(cht)) {
 				ret -= (Get(prev) << 1);
 			}
-			prev = (ch == 'I' || ch == 'X' || ch == 'C') ? ch : '\0';
+			prev = (cht == 'I' || cht == 'X' || cht == 'C') ? cht : '\0';
 		}
 		return ret;
 	}
@@ -1760,7 +2224,7 @@ struct Roman
 };
 
 
-template <typename T>
+template<typename T>
 struct Triangle2D
 {
 	Point2D<T> A, B, C;
@@ -1804,10 +2268,16 @@ private:
  */
 struct ScopedTimer
 {
-	ScopedTimer() {
+	ScopedTimer(const std::string name = std::string(""))
+		: m_Name(name)
+	{
 		QueryPerformanceCounter(&m_tStartTime);
-		m_Started = GetCurrentDateTime();
-		printf_s("Started : %s\n", m_Started.c_str());
+		m_Started = GetCurrentDateTimeA();
+		if (!m_Name.empty()) {
+			printf_s("[%s] Started : %s\n", m_Name.c_str(), m_Started.c_str());
+		} else {
+			printf_s("Started : %s\n", m_Started.c_str());
+		}
 	}
 
 	~ScopedTimer() {
@@ -1815,9 +2285,14 @@ struct ScopedTimer
 		QueryPerformanceFrequency(&m_tFrequency);
 		m_Elapsed = (double)(m_tStopTime.QuadPart - m_tStartTime.QuadPart) / (double)m_tFrequency.QuadPart;
 
-		m_Ended = GetCurrentDateTime();
-		printf_s("Ended   : %s\n", m_Ended.c_str());
-		printf_s("Elapsed : %f\n", m_Elapsed);
+		m_Ended = GetCurrentDateTimeA();
+		if (!m_Name.empty()) {
+			printf_s("[%s] Ended   : %s\n", m_Name.c_str(), m_Ended.c_str());
+			printf_s("[%s] Elapsed : %f\n", m_Name.c_str(), m_Elapsed);
+		} else {
+			printf_s("Ended   : %s\n", m_Ended.c_str());
+			printf_s("Elapsed : %f\n", m_Elapsed);
+		}
 	}
 
 private:
@@ -2105,6 +2580,85 @@ struct PrintFormatter
 		_vtprintf_s(fmt, tArgs);
 
 		_tprintf_s(_T("\r\n"));
+	}
+};
+
+class DijkstraAlgorithm {
+	struct Node {
+		int r;
+		int c;
+		int cost;
+		Node(int _r, int _c, int _cost) : r(_r), c(_c), cost(_cost) {}
+		bool operator < (const Node& other) const {
+			return cost > other.cost;
+		}
+	};
+
+	std::vector<std::vector<int>> vvi;
+	int R;
+	int C;
+	int sourceRow;
+	int sourceCol;
+	int targetRow;
+	int targetCol;
+	std::vector<short> vdr;
+	std::vector<short> vdc;
+
+	int minCost;
+
+public:
+	explicit DijkstraAlgorithm(const std::vector<std::vector<int>>& _vvi,
+		int sourceRow, int sourceCol,
+		int targetRow, int targetCol,
+		int numDirections = 4)
+		: vvi(_vvi)
+	{
+		this->R = (int) vvi.size();
+		this->C = (int) vvi[0].size();
+
+		this->sourceRow = sourceRow;
+		this->sourceCol = sourceCol;
+		this->targetRow = targetRow;
+		this->targetCol = targetCol;
+
+		if (numDirections == 4) {
+			vdr = { 0, 1,  0, -1 };
+			vdc = { 1, 0, -1,  0 };
+		}
+		else {
+			vdr = { -1, 0, 1, 1,  1,  0, -1, -1 };
+			vdc = {  1, 1, 1, 0, -1, -1, -1,  0 };
+		}
+
+		// Returns
+		minCost = -1;
+	}
+
+	int getMinimumCost() {
+		std::vector<std::vector<bool>> visited(R, std::vector<bool>(C, false));
+		std::priority_queue<Node> pq;
+		Node node(sourceRow, sourceCol, vvi[sourceRow][sourceCol]);
+		pq.push(node);
+		while (!pq.empty()) {
+			node = pq.top(); pq.pop();
+			
+			if (node.r == targetRow && node.c == targetCol) {
+				minCost = node.cost;
+				return minCost;
+			}
+
+			if (visited[node.r][node.c]) continue;
+			visited[node.r][node.c] = true;
+
+			FOR(i, vdr.size()) {
+				int r = node.r + vdr[i];
+				int c = node.c + vdc[i];
+				if (r >= 0 && r < R && c >= 0 && c < C && !visited[r][c]) {
+					pq.push(Node(r, c, node.cost + vvi[r][c]));
+				}
+			}
+		}
+		return -1;
 	}
 };
 
