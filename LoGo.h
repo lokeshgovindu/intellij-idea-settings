@@ -132,29 +132,94 @@ typedef char						String[MAX_STRING_LEN];
 
 #else /* __cplusplus */
 
-#include <vector>
-#include <list>
-#include <map>
-#include <unordered_map>
-#include <set>
-#include <unordered_set>
-#include <queue>
-#include <deque>
-#include <stack>
-#include <bitset>
-#include <algorithm>
-#include <functional>
-#include <numeric>
-#include <utility>
-#include <fstream>
-#include <sstream>
-#include <iostream>
-#include <iomanip>
-#include <cstdio>
+// C
+#include <cassert>
+#include <cctype>
+#include <cerrno>
+#include <cfloat>
+#include <ciso646>
+#include <climits>
+#include <clocale>
 #include <cmath>
+#include <csetjmp>
+#include <csignal>
+#include <cstdarg>
+#include <cstddef>
+#include <cstdio>
 #include <cstdlib>
+#include <cstring>
 #include <ctime>
+
+// C++
+#include <algorithm>
+#include <bitset>
+#include <complex>
+#include <deque>
+#include <exception>
+#include <fstream>
+#include <functional>
+#include <iomanip>
+#include <ios>
+#include <iosfwd>
+#include <iostream>
+#include <istream>
+#include <iterator>
+#include <limits>
+#include <list>
+#include <locale>
+#include <map>
+#include <memory>
+#include <new>
+#include <numeric>
+#include <ostream>
+#include <queue>
+#include <set>
+#include <sstream>
+#include <stack>
+#include <stdexcept>
+#include <streambuf>
+#include <string>
+#include <typeinfo>
+#include <utility>
+#include <valarray>
+#include <vector>
+
+// _MSC_VER >= 1700	| VisualStudio 2012, VC++ compiler
+
+#if _MSC_VER >= 1700 || __cplusplus >= 201103L
+#include <array>
+#include <atomic>
+#include <chrono>
+#include <codecvt>
+#include <condition_variable>
+#include <forward_list>
+#include <future>
+#include <initializer_list>
+#include <mutex>
+#include <random>
+#include <ratio>
 #include <regex>
+#include <scoped_allocator>
+#include <system_error>
+#include <thread>
+#include <tuple>
+#include <typeindex>
+#include <type_traits>
+#include <unordered_map>
+#include <unordered_set>
+#endif
+
+#if __cplusplus >= 201402L
+#include <shared_mutex>
+#endif
+
+#if __cplusplus >= 201703L
+#include <charconv>
+#include <filesystem>
+#endif
+
+#define __LGCPP11 	_MSC_VER >= 1700 || __cplusplus >= 201103L
+#define __LGCPP14 	_MSC_VER >= 1700 || __cplusplus >= 201402L
 
 /*****************************************************************************/
 
@@ -202,6 +267,9 @@ typedef std::vector<tstring>		VTS;
 /*****************************************************************************/
 
 #define LGSCOPEDTIMER(st)			LOGO_NS::ScopedTimer st(__FUNCTION__)
+#define MPI							3.14159265358979323846264338327950288419716939937510
+
+/*****************************************************************************/
 
 #define SIZE(C)						C.size()
 #define ALL(C)						(C).begin(), (C).end()
@@ -212,7 +280,7 @@ typedef std::vector<tstring>		VTS;
 
 //#define FOREACH(T, it, C)			for (T::iterator it = (C).begin(); it != (C).end(); ++it)
 
-#if _MSC_VER >= 1700	/* VisualStudio 2012, VC++ compiler */
+#if __LGCPP11	/* VisualStudio 2012, VC++ compiler */
 #define FOR(i, n)					for (decltype(n) i = 0; i < (n); ++i)
 #define FORR(i, n)					for (decltype(n) i = n - 1; i >= 0; --i)
 #define FORC(i, C)					for (size_t i = 0; i < (C).size(); ++i)
@@ -260,8 +328,12 @@ typedef std::vector<tstring>		VTS;
 	cin.ignore();					\
 	getline(cin, S);
 
-#define LGTRACE(a)								std::cout << (a) << std::endl
-#define LGTRACE1(a)								std::cout << (a) << std::endl
+#define LGTRACE(a)				std::cout << (a) << std::endl
+#define LGTRACE(a)				std::cout << (a) << std::endl
+#define LGTRACE_FUNC			std::cout << "Function : " << (__FUNCTION__) << std::endl
+#define LGTRACE_FUNCSIG			std::cout << "FuncSign : " << (__FUNCSIG__) << std::endl
+
+#define LGTRACE1(a)				std::cout << (a) << std::endl
 
 #define LGTRACE2(a, b)														\
 	std::cout << (a) << ", " << (b) << std::endl
@@ -333,7 +405,7 @@ typedef std::vector<tstring>		VTS;
 #define LGFILE_OPEN(fs, path)					\
 	fstream fs(path);							\
 	if (fs.is_open() == false) {				\
-		cout << "file not opened" << endl;		\
+		std::cout << "file not opened" << std::endl;	\
 	}
 
 
@@ -368,7 +440,7 @@ typedef std::vector<tstring>		VTS;
 	TIME(t1);																\
 	exp;																	\
 	TIME(t2);																\
-	cout << LGSTR(exp) << " : " << TIME_DIFF(t1, t2) << " s" << endl;		\
+	std::cout << LGSTR(exp) << " : " << TIME_DIFF(t1, t2) << " s" << std::endl;		\
 }
 #endif
 
@@ -610,6 +682,19 @@ std::ostream& operator << (std::ostream& out, const wchar_t* wstr)
 }
 
 /**
+ * Print initializer_list elements on stdout.
+ */
+template<typename T>
+std::ostream& operator << (std::ostream& out, const std::initializer_list<T>& il) {
+	if (il.size() == 0) return out;
+	auto it = il.begin();
+	out << "{ " << *it;
+	for (++it; it != il.end(); ++it) out << ", " << *it;
+	out << " }";
+	return out;
+}
+
+/**
  * Print vector elements on stdout.
  */
 template<typename T>
@@ -621,6 +706,35 @@ std::ostream& operator << (std::ostream& out, const std::vector<T>& V) {
 	return out;
 }
 
+//template<typename T>
+//std::ostream& operator << (std::ostream& out, const std::vector<std::vector<T>>& VV) {
+//	if (VV.empty()) return out;
+//	out << "{" << std::endl;
+//	for (size_t i = 0; i < VV.size(); ++i)
+//		out << "    " << VV[i] << "," << std::endl;
+//	out << "}";
+//	return out;
+//}
+
+template<typename T>
+std::ostream& operator << (std::ostream& out, const std::vector<std::vector<T>>& vv) {
+	if (vv.empty()) return out;
+	int R = vv.size();
+	int C = vv[0].size();
+	printf("\n");
+	printf("    |");
+	for (int i = 0; i < C; ++i) printf("%5d", i);
+	printf("\n");
+	out << std::string(80, '-') << std::endl;
+	for (int r = 0; r < R; ++r) {
+		printf("%3d |", r);
+		for (int c = 0; c < C; ++c) {
+			printf("%5d", vv[r][c]);
+		}
+		printf("\n");
+	}
+	return out;
+}
 
 #ifndef LGDONOTUSEQUOTESFORSTRINGS
 /**
@@ -659,7 +773,7 @@ std::ostream& operator << (std::ostream& out, const std::set<T>& st)
  * Print std::pair<T1, T2> on stdout as shown below.
  * 
  * std::pair<int, int> pt = make_pair<int, int>(24, 9);
- * cout << pt << endl;
+ * cout << pt << std::endl;
  * 
  * Output: (24, 9)
  */
@@ -693,6 +807,29 @@ std::ostream& operator << (std::ostream& out, const std::map<TKey, TValue>& mp)
 	return out;
 }
 
+
+/**
+ * \brief Print std::map elements on stdout as shown below.
+ * 
+ * mp = [{ (0, 0), (1, 1), (2, 4), (3, 9), (4, 16), (5, 25) }]
+ * mp = [{ 0: 0, 1: 1, 2: 4, 3: 9, 4: 16, 5: 25 }]
+ */
+template<typename TKey, typename TValue>
+std::ostream& operator << (std::ostream& out, const std::unordered_map<TKey, TValue>& mp)
+{
+	if (mp.empty()) return out;
+	std::unordered_map<TKey, TValue>::const_iterator it = mp.begin();
+#if 1
+	out << "{ " << it->first << ": " << it->second;
+	for (++it; it != mp.end(); ++it) out << ", " << it->first << ": " << it->second;
+	out << " }";
+#else
+	out << "{ " << *it;
+	for (++it; it != mp.end(); ++it) out << ", " << *it;
+	out << " }";
+#endif
+	return out;
+}
 
 /**
  * \brief Converts any object (that can be convertible) to string format.
@@ -846,7 +983,7 @@ std::fstream& operator >> (std::fstream& fs, std::vector<T>& v)
 	size_t q = line.find_last_not_of(" ");
 
 	line = line.substr(p, q - p + 1);
-	stringstream ss(line);
+	std::stringstream ss(line);
 	T val;
 	while (ss >> val) { v.push_back(val); }
 	return fs;
@@ -1323,7 +1460,7 @@ template<typename T> bool IsPandigital(const T& N)
 	const int SZ = 10;
 	char check[SZ] = { 1, 0 };
 	for (T n = N; n > 0; n /= 10) check[n % 10] = 1;
-	FOR(i, SZ) if (!check[i]) return false;
+	FOR(i, (int)SZ) if (!check[i]) return false;
 	return true;
 }
 
@@ -1650,7 +1787,7 @@ bool IsStrictlyDecreasingNumber(T n)
 
 template<typename T> T NCR(int N, int R)
 {
-	R = min(R, N - R);
+	R = std::min(R, N - R);
 	std::vector<int> vi1, vi2;
 	FORN(i, 1, R) vi1.push_back(N - i + 1);
 	FORN(i, 1, R) vi2.push_back(i);
@@ -1987,6 +2124,30 @@ bool IsPalindrome(const std::string& s, int l, int r) {
 	return true;
 }
 
+std::string LCSubString(const std::string& X, const std::string& Y) {
+	int m = X.size();
+	int n = Y.size();
+	int len = 0;
+	int end;
+	int currRow = 0;
+	std::vector<std::vector<int>> LCSuff(2, std::vector<int>(n + 1, 0));
+
+	// The first row and first column entries have no logical meaning,  
+	// they are used only for simplicity of program.
+	// Following steps build LCSuff[m + 1][n + 1] in bottom up fashion. 
+	for (int i = 1; i <= m; ++i) {
+		for (int j = 1; j <= n; ++j) {
+			if (X[i - 1] == Y[j - 1]) {
+				LCSuff[currRow][j] = LCSuff[1 - currRow][j - 1] + 1;
+				len = std::max<int>(len, LCSuff[currRow][j]);
+				end = i - 1;
+			}
+		}
+		currRow = 1 - currRow;
+	}
+	return X.substr(end - len + 1, len);
+}
+
 // 
 // :::~strings
 // 
@@ -2103,7 +2264,7 @@ struct StreamReader
 		return true;
 	}
 
-	template<class T> T ToVal(const std::string& s) { T ret; istringstream iss(s); iss >> ret; return ret; }
+	template<class T> T ToVal(const std::string& s) { T ret; std::istringstream iss(s); iss >> ret; return ret; }
 
 	std::string Trim(const std::string& str, std::string seps = " ")
 	{
@@ -2189,18 +2350,18 @@ struct Roman
 	static long Convert(const std::string& romanNumeral) {
 		long ret = 0;
 		char prev = '\0';
-#if _MSC_VER >= 1700	/* VisualStudio 2012, VC++ compiler */
-		FOREACH(ch, romanNumeral) {
+#if __LGCPP11	/* VisualStudio 2012, VC++ compiler */
+		FOREACH(_ch, romanNumeral) {
 #else
 		FOREACH(std::string, it, romanNumeral) {
 			decltype(*it) ch = *it;
 #endif
-			auto cht = toupper(ch);
-			ret += Get(cht);
-			if (prev && Get(prev) < Get(cht)) {
+			char ch = toupper(_ch);
+			ret += Get(ch);
+			if (prev && Get(prev) < Get(ch)) {
 				ret -= (Get(prev) << 1);
 			}
-			prev = (cht == 'I' || cht == 'X' || cht == 'C') ? cht : '\0';
+			prev = (ch == 'I' || ch == 'X' || ch == 'C') ? ch : '\0';
 		}
 		return ret;
 	}
@@ -2665,12 +2826,20 @@ public:
 template<typename T>
 struct SubsetSum {
     std::vector<T> vi;
+    bool printTable;
 
-    SubsetSum(const std::vector<T> &_vi) {
-        this->vi = _vi;
+    SubsetSum(const T* A, int N) {
+        this->printTable = false;
+        FOR(i, N) this->vi.push_back(A[i]);
     }
 
-    bool solve(T sum) {
+    SubsetSum(const std::vector<T>& _vi) : vi(_vi), printTable(false) {}
+
+    bool Solve(T sum) {
+        T viSum = std::accumulate(ALL(vi), 0);
+        if (viSum < sum) return false;
+        if (viSum == sum) return true;
+
         int n = (int) vi.size();
 
         // The value of subset[i][j] will be true if there is a subset of
@@ -2692,7 +2861,7 @@ struct SubsetSum {
         }
 
         // Change if condition to true to print table.
-        if (!false) {
+        if (this->printTable) {
             printf_s("     |     ");
             FOR(j, n) printf_s("%4d", vi[j]);
             printf_s("\n");
@@ -2710,6 +2879,47 @@ struct SubsetSum {
         }
 
         return subset[sum][n];
+    }
+
+    std::vector<T> Backtrack(T sum) {
+        T viSum = std::accumulate(ALL(vi), 0);
+        if (viSum < sum) return std::vector<T>();
+        if (viSum == sum) {
+            std::vector<T> ret(vi.size());
+            std::iota(ALL(ret), 0);
+            return ret;
+        }
+
+        int n = (int)vi.size();
+
+        // The value of subset[i][j] will be true if there is a subset of
+        // set[0..j-1] with sum equal to i
+        std::vector<std::vector<bool>> subset(sum + 1, std::vector<bool>(n + 1, false));
+
+        // If sum is 0, then answer is true
+        FORN(i, 0, n) subset[0][i] = true;
+
+        // If sum is not 0 and set is empty, then answer is false
+        FORN(i, 1, sum) subset[i][0] = false;
+
+        // Fill the subset table in bottom up manner
+        FORN(i, 1, sum) {
+            FORN(j, 1, n) {
+                subset[i][j] = subset[i][j - 1] ||
+                    (i >= vi[j - 1] ? subset[i - vi[j - 1]][j - 1] : subset[i][j - 1]);
+            }
+        }
+
+        if (!subset[sum][n]) return vector<T>();
+
+        std::vector<T> ret;
+        for (int s = sum, ind = n; s != 0;) {
+            while (ind > 0 && subset[s][ind - 1]) --ind;
+            ret.push_back(ind - 1);
+            s -= this->vi[ind - 1];
+        }
+        std::reverse(ALL(ret));
+        return ret;
     }
 };
 
