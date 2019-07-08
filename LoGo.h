@@ -48,7 +48,10 @@
 #include <stdlib.h>
 #include <stdarg.h>
 
+
+#if defined(WIN32) || defined(_WIN32)
 #include <windows.h>
+#endif
 
 /*****************************************************************************/
 
@@ -88,12 +91,10 @@ typedef signed char                 Int8;
 typedef signed short                Int16;
 typedef signed int                  Int32;
 typedef signed long long            Int64;
-typedef signed __int64              Int64;
 typedef unsigned char               UInt8;
 typedef unsigned short              UInt16;
 typedef unsigned int                UInt32;
 typedef unsigned long long          UInt64;
-typedef unsigned __int64            UInt64;
 typedef char                        Char;
 typedef float                       Single;
 typedef double                      Double;
@@ -131,6 +132,10 @@ typedef char                        String[MAX_STRING_LEN];
 //-----------------------------------------------------------------------------
 
 #else /* __cplusplus */
+
+#define __LGCPP11   (_MSC_VER >= 1700 || __cplusplus >= 201103L)
+#define __LGCPP14   (_MSC_VER >= 1900 || __cplusplus >= 201402L)
+#define __LGCPP17   (_MSC_VER >= 1900 || __cplusplus >= 201703L)
 
 // C
 #include <cassert>
@@ -186,7 +191,7 @@ typedef char                        String[MAX_STRING_LEN];
 
 // _MSC_VER >= 1700 | VisualStudio 2012, VC++ compiler
 
-#if _MSC_VER >= 1700 || __cplusplus >= 201103L
+#if __LGCPP11
 #include <array>
 #include <atomic>
 #include <chrono>
@@ -209,17 +214,14 @@ typedef char                        String[MAX_STRING_LEN];
 #include <unordered_set>
 #endif
 
-#if __cplusplus >= 201402L
+#if __LGCPP14
 #include <shared_mutex>
 #endif
 
-#if __cplusplus >= 201703L
+#if __LGCPP17
 #include <charconv>
 #include <filesystem>
 #endif
-
-#define __LGCPP11   _MSC_VER >= 1700 || __cplusplus >= 201103L
-#define __LGCPP14   _MSC_VER >= 1700 || __cplusplus >= 201402L
 
 /*****************************************************************************/
 
@@ -441,7 +443,7 @@ typedef std::vector<tstring>        VTS;
     exp;                                                                    \
     TIME(t2);                                                               \
     std::cout << LGSTR(exp) << " : " << TIME_DIFF(t1, t2) << " s" <<        \
-    std::endl;     \
+    std::endl;                                                              \
 }
 #endif
 
@@ -2472,11 +2474,12 @@ struct Triangle2D
     }
 };
 
+#if defined(WIN32) || defined(_WIN32)
 
 /**
  *  \brief StopWatch
  */
-struct StopWatch
+struct CStopWatch
 {
     void Start() {
         QueryPerformanceCounter(&m_tStartTime);
@@ -2497,11 +2500,11 @@ private:
 
 
 /**
- *  \brief ScoppedTimer
+ *  \brief CScoppedTimer
  */
-struct ScopedTimer
+struct CScopedTimer
 {
-    ScopedTimer(const std::string name = std::string(""))
+    CScopedTimer(const std::string name = std::string(""))
         : m_Name(name)
     {
         QueryPerformanceCounter(&m_tStartTime);
@@ -2513,7 +2516,7 @@ struct ScopedTimer
         }
     }
 
-    ~ScopedTimer() {
+    ~CScopedTimer() {
         QueryPerformanceCounter(&m_tStopTime);
         QueryPerformanceFrequency(&m_tFrequency);
         m_Elapsed = (double)(m_tStopTime.QuadPart - m_tStartTime.QuadPart) / (double)m_tFrequency.QuadPart;
@@ -2538,6 +2541,8 @@ private:
     double          m_Elapsed;
     std::string     m_Name;
 };
+
+#endif
 
 //
 // :::~class / :::~struct
