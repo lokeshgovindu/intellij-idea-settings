@@ -1945,6 +1945,66 @@ T GetCoinChanges(const std::vector<T>& vi, T n)
     return dp[n][m - 1];
 }
 
+
+template<typename BaseType, BaseType _MOD>
+struct Modulo {
+    static const int INVERSE_CACHE_SIZE = (1 << 20);
+    static BaseType MOD;
+    static void set_mod(BaseType new_mod) { MOD = new_mod; }
+
+    BaseType n;
+    Modulo(long long d = 0) { n = (d >= 0 ? d % MOD : (d % MOD + MOD) % MOD); }
+    virtual ~Modulo() = default;
+
+    Modulo operator - () const { return build(n == 0 ? 0 : MOD - n); }
+    Modulo& operator += (Modulo a) { n = (n >= MOD - a.n ? n - MOD + a.n : n + a.n); return *this; }
+    Modulo& operator -= (Modulo a) { n = (n >= a.n) ? n - a.n : n - a.n + MOD; return *this; }
+    Modulo& operator *= (Modulo a) { *this = *this * a; return *this; }
+    Modulo& operator /= (Modulo a) { *this = *this / a; return *this; }
+
+    static Modulo build(BaseType n) { Modulo r; r.n = n; return r; }
+
+    static BaseType inverse_cache[INVERSE_CACHE_SIZE];
+    static bool inverse_cache_ready;
+    friend Modulo inverse(Modulo n) { return build(inverse_internal(n.n)); }
+    static BaseType inverse_internal(BaseType n) {
+        if (!inverse_cache_ready) {
+            inverse_cache_ready = true;
+            inverse_cache[0] = 0;
+            inverse_cache[1] = 1;
+            for (int n = 2; n < INVERSE_CACHE_SIZE; ++n) {
+                inverse_cache[n] = (MOD - (BaseType)((long long)inverse_cache[MOD % n] * (MOD / n) % MOD));
+            }
+        }
+        return n < INVERSE_CACHE_SIZE ? inverse_cache[n] : MOD - (BaseType)((long long)inverse_internal(MOD % n) * (MOD / n) % MOD);
+    }
+
+    friend bool operator == (Modulo a, Modulo b) { return a.n == b.n; }
+    friend bool operator != (Modulo a, Modulo b) { return a.n != b.n; }
+    friend Modulo operator + (Modulo a, Modulo b) { return build(a.n >= MOD - b.n ? a.n - MOD + b.n : a.n + b.n); }
+    friend Modulo operator - (Modulo a, Modulo b) { return build(a.n >= b.n ? a.n - b.n : a.n - b.n + MOD); }
+    friend Modulo operator * (Modulo a, Modulo b) { return build(static_cast<BaseType>(static_cast<long long>(a.n) * b.n % MOD)); }
+    friend Modulo operator / (Modulo a, Modulo b) { return a * inverse(b); }
+    friend Modulo pow(Modulo p, long long e) {
+        if (e <= 0) return Modulo(1);
+        Modulo r = Modulo(1);
+        while (true) {
+            if (e & 1) r *= p;
+            e /= 2;
+            if (e) p = p * p;
+            else break;
+        }
+        return r;
+    }
+
+    friend std::istream& operator >> (std::istream& stream, Modulo& a) { stream >> a.n; return stream; }
+    friend std::ostream& operator << (std::ostream& stream, const Modulo& a) { stream << a.n; return stream; }
+};
+
+template<typename BaseType, BaseType _MOD> BaseType Modulo<BaseType, _MOD>::inverse_cache[INVERSE_CACHE_SIZE];
+template<typename BaseType, BaseType _MOD> bool Modulo<BaseType, _MOD>::inverse_cache_ready;
+template<typename BaseType, BaseType _MOD> BaseType Modulo<BaseType, _MOD>::MOD = _MOD;
+
 //
 // :::~numeric
 //
