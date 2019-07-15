@@ -22,7 +22,6 @@
 #ifndef __LoGo_H__
 #define __LoGo_H__
 
-#define LGCHR(x)                        #@x
 #define LGSTR_(x)                       #x
 #define LGSTR(x)                        LGSTR_(x)
 #define LGWSTR_(x)                      L###x
@@ -47,7 +46,6 @@
 #include <conio.h>
 #include <stdlib.h>
 #include <stdarg.h>
-
 
 #if defined(WIN32) || defined(_WIN32)
 #include <windows.h>
@@ -549,6 +547,7 @@ template<typename T> std::vector<unsigned long> GetPrimes(T N);
 static int CountRectangles(int W, int H, bool includeSquares = false);
 template <typename T> bool IsPalindrome(T n);
 template <typename T> T GetCoinChanges(const std::vector<T>& vi, T n);
+template <typename T> T Phi(T n);
 
 //
 // :::~numeric
@@ -2006,6 +2005,25 @@ struct Modulo {
 template<typename BaseType, BaseType _MOD> BaseType Modulo<BaseType, _MOD>::inverse_cache[INVERSE_CACHE_SIZE];
 template<typename BaseType, BaseType _MOD> bool Modulo<BaseType, _MOD>::inverse_cache_ready;
 template<typename BaseType, BaseType _MOD> BaseType Modulo<BaseType, _MOD>::MOD = _MOD;
+
+
+//
+// Euler's Totient function :-
+//  f(n) [sometimes called the phi function], is used to determine
+//  the number of numbers less than n which are relatively prime to n.
+// For example, as 1, 2, 4, 5, 7, and 8, are all less than nine and relatively
+//  prime to nine, f(9) = 6.
+//
+template <typename T> T Phi(T n)
+{
+    T ret = 1;
+    map<T, T> mp;
+    GetPrimeFactors(n, mp);
+    for (auto& pr : mp) {
+        ret *= (pr.first - 1) * (int)pow(1. * pr.first, pr.second - 1);
+    }
+    return ret;
+}
 
 //
 // :::~numeric
