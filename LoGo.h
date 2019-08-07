@@ -133,7 +133,7 @@ typedef char                        String[MAX_STRING_LEN];
 
 #define __LGCPP11   (_MSC_VER >= 1700 || __cplusplus >= 201103L)
 #define __LGCPP14   (_MSC_VER >= 1900 || __cplusplus >= 201402L)
-#define __LGCPP17   (_MSC_VER >= 1900 || __cplusplus >= 201703L)
+#define __LGCPP17   (_MSC_VER >= 2000 || __cplusplus >= 201703L)
 
 // C
 #include <cassert>
@@ -266,7 +266,7 @@ typedef std::vector<tstring>        VTS;
 
 /*****************************************************************************/
 
-#define LGSCOPEDTIMER(st)           LOGO_NS::ScopedTimer st(__FUNCTION__)
+#define LGSCOPEDTIMER(st)           LOGO_NS::CScopedTimer st(__FUNCTION__)
 #define MPI                         3.14159265358979323846264338327950288419716939937510
 
 /*****************************************************************************/
@@ -280,7 +280,7 @@ typedef std::vector<tstring>        VTS;
 
 //#define FOREACH(T, it, C)         for (T::iterator it = (C).begin(); it != (C).end(); ++it)
 
-#if __LGCPP11   /* VisualStudio 2012, VC++ compiler */
+#if __LGCPP11
 #define FOR(i, n)                   for (decltype(n) i = 0; i < (n); ++i)
 #define FORR(i, n)                  for (decltype(n) i = n - 1; i >= 0; --i)
 #define FORC(i, C)                  for (size_t i = 0; i < (C).size(); ++i)
@@ -457,7 +457,7 @@ typedef std::vector<tstring>        VTS;
 //
 #if __LGCPP11
 #define __ARG_N(                                \
-    _1, _2, _3, _4, _5, _6, _7, _8, _9,_10,     \
+     _1, _2, _3, _4, _5, _6, _7, _8, _9,_10,    \
     _11,_12,_13,_14,_15,_16,_17,_18,_19,_20,    \
     _21,_22,_23,_24,_25,_26,_27,_28,_29,_30,    \
     _31,_32,_33,_34,_35,_36,_37,_38,_39,_40,    \
@@ -2544,11 +2544,11 @@ struct Roman
         char prev = '\0';
 #if __LGCPP11   /* VisualStudio 2012, VC++ compiler */
         FOREACH(_ch, romanNumeral) {
+            char ch = toupper(_ch);
 #else
         FOREACH(std::string, it, romanNumeral) {
             decltype(*it) ch = *it;
 #endif
-            char ch = toupper(_ch);
             ret += Get(ch);
             if (prev && Get(prev) < Get(ch)) {
                 ret -= (Get(prev) << 1);
