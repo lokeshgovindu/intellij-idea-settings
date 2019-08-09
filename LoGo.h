@@ -365,92 +365,31 @@ typedef std::vector<tstring>        VTS;
               << (e) << ", " << (f) << ", " << (g) << ", " << (h) << ", "   \
               << (i) << std::endl
 
-#define LGPRINT_FMT(x)  LGSTR(x) << " = [" << (x) << "]"
-#define LGPRINT_SEP     ", "
+#define LGPRINT_SEP         ", "
+#define LGPRINT_FMT(x)      LGSTR(x) << " = [" << (x) << "]"
+#define LGPRINT_FMT_(x)     LGPRINT_SEP << LGPRINT_FMT(x)
 
-#define LGPRINT1(x) std::cout << LGPRINT_FMT(x) << std::endl
+#define LGPRINT_FMT1(a)                             LGPRINT_FMT(a)
+#define LGPRINT_FMT2(a, b)                          LGPRINT_FMT1(a) << LGPRINT_FMT_(b)
+#define LGPRINT_FMT3(a, b, c)                       LGPRINT_FMT2(a, b) << LGPRINT_FMT_(c)
+#define LGPRINT_FMT4(a, b, c, d)                    LGPRINT_FMT3(a, b, c) << LGPRINT_FMT_(d)
+#define LGPRINT_FMT5(a, b, c, d, e)                 LGPRINT_FMT4(a, b, c, d) << LGPRINT_FMT_(e)
+#define LGPRINT_FMT6(a, b, c, d, e, f)              LGPRINT_FMT5(a, b, c, d, e) << LGPRINT_FMT_(f)
+#define LGPRINT_FMT7(a, b, c, d, e, f, g)           LGPRINT_FMT6(a, b, c, d, e, g) << LGPRINT_FMT_(g)
+#define LGPRINT_FMT8(a, b, c, d, e, f, g, h)        LGPRINT_FMT7(a, b, c, d, e, g, h) << LGPRINT_FMT_(h)
+#define LGPRINT_FMT9(a, b, c, d, e, f, g, h, i)     LGPRINT_FMT8(a, b, c, d, e, g, h, i) << LGPRINT_FMT_(i)
+#define LGPRINT_FMT10(a, b, c, d, e, f, g, h, i, j) LGPRINT_FMT9(a, b, c, d, e, g, h, i, j) << LGPRINT_FMT_(j)
 
-#define LGPRINT2(a, b)                                                      \
-    std::cout                                                               \
-        << LGPRINT_FMT(a) << LGPRINT_SEP                                    \
-        << LGPRINT_FMT(b) << std::endl
-
-#define LGPRINT3(a, b, c)                                                   \
-    std::cout                                                               \
-        << LGPRINT_FMT(a) << LGPRINT_SEP                                    \
-        << LGPRINT_FMT(b) << LGPRINT_SEP                                    \
-        << LGPRINT_FMT(c) << std::endl
-
-#define LGPRINT4(a, b, c, d)                                                \
-    std::cout                                                               \
-        << LGPRINT_FMT(a) << LGPRINT_SEP                                    \
-        << LGPRINT_FMT(b) << LGPRINT_SEP                                    \
-        << LGPRINT_FMT(c) << LGPRINT_SEP                                    \
-        << LGPRINT_FMT(d) << std::endl
-
-#define LGPRINT5(a, b, c, d, e)                                             \
-    std::cout                                                               \
-        << LGPRINT_FMT(a) << LGPRINT_SEP                                    \
-        << LGPRINT_FMT(b) << LGPRINT_SEP                                    \
-        << LGPRINT_FMT(c) << LGPRINT_SEP                                    \
-        << LGPRINT_FMT(d) << LGPRINT_SEP                                    \
-        << LGPRINT_FMT(e) << std::endl
-
-#define LGPRINT6(a, b, c, d, e, f)                                          \
-    std::cout                                                               \
-        << LGPRINT_FMT(a) << LGPRINT_SEP                                    \
-        << LGPRINT_FMT(b) << LGPRINT_SEP                                    \
-        << LGPRINT_FMT(c) << LGPRINT_SEP                                    \
-        << LGPRINT_FMT(d) << LGPRINT_SEP                                    \
-        << LGPRINT_FMT(e) << LGPRINT_SEP                                    \
-        << LGPRINT_FMT(f) << std::endl
-
-#define LGPRINT7(a, b, c, d, e, f, g)                                       \
-    std::cout                                                               \
-        << LGPRINT_FMT(a) << LGPRINT_SEP                                    \
-        << LGPRINT_FMT(b) << LGPRINT_SEP                                    \
-        << LGPRINT_FMT(c) << LGPRINT_SEP                                    \
-        << LGPRINT_FMT(d) << LGPRINT_SEP                                    \
-        << LGPRINT_FMT(e) << LGPRINT_SEP                                    \
-        << LGPRINT_FMT(f) << LGPRINT_SEP                                    \
-        << LGPRINT_FMT(g) << std::endl
-
-#define LGPRINT8(a, b, c, d, e, f, g, h)                                    \
-    std::cout                                                               \
-        << LGPRINT_FMT(a) << LGPRINT_SEP                                    \
-        << LGPRINT_FMT(b) << LGPRINT_SEP                                    \
-        << LGPRINT_FMT(c) << LGPRINT_SEP                                    \
-        << LGPRINT_FMT(d) << LGPRINT_SEP                                    \
-        << LGPRINT_FMT(e) << LGPRINT_SEP                                    \
-        << LGPRINT_FMT(f) << LGPRINT_SEP                                    \
-        << LGPRINT_FMT(g) << LGPRINT_SEP                                    \
-        << LGPRINT_FMT(h) << std::endl
-
-#define LGPRINT9(a, b, c, d, e, f, g, h, i)                                 \
-    std::cout                                                               \
-        << LGPRINT_FMT(a) << LGPRINT_SEP                                    \
-        << LGPRINT_FMT(b) << LGPRINT_SEP                                    \
-        << LGPRINT_FMT(c) << LGPRINT_SEP                                    \
-        << LGPRINT_FMT(d) << LGPRINT_SEP                                    \
-        << LGPRINT_FMT(e) << LGPRINT_SEP                                    \
-        << LGPRINT_FMT(f) << LGPRINT_SEP                                    \
-        << LGPRINT_FMT(g) << LGPRINT_SEP                                    \
-        << LGPRINT_FMT(h) << LGPRINT_SEP                                    \
-        << LGPRINT_FMT(i) << std::endl
-
-#define LGPRINT10(a, b, c, d, e, f, g, h, i, j)                             \
-    std::cout                                                               \
-        << LGPRINT_FMT(a) << LGPRINT_SEP                                    \
-        << LGPRINT_FMT(b) << LGPRINT_SEP                                    \
-        << LGPRINT_FMT(c) << LGPRINT_SEP                                    \
-        << LGPRINT_FMT(d) << LGPRINT_SEP                                    \
-        << LGPRINT_FMT(e) << LGPRINT_SEP                                    \
-        << LGPRINT_FMT(f) << LGPRINT_SEP                                    \
-        << LGPRINT_FMT(g) << LGPRINT_SEP                                    \
-        << LGPRINT_FMT(h) << LGPRINT_SEP                                    \
-        << LGPRINT_FMT(i) << LGPRINT_SEP                                    \
-        << LGPRINT_FMT(j) << std::endl
-
+#define LGPRINT1(a)                                 std::cout << LGPRINT_FMT1(a) << std::endl
+#define LGPRINT2(a, b)                              std::cout << LGPRINT_FMT2(a, b) << std::endl
+#define LGPRINT3(a, b, c)                           std::cout << LGPRINT_FMT3(a, b, c) << std::endl
+#define LGPRINT4(a, b, c, d)                        std::cout << LGPRINT_FMT4(a, b, c, d) << std::endl
+#define LGPRINT5(a, b, c, d, e)                     std::cout << LGPRINT_FMT5(a, b, c, d, e) << std::endl
+#define LGPRINT6(a, b, c, d, e, f)                  std::cout << LGPRINT_FMT6(a, b, c, d, e, f) << std::endl
+#define LGPRINT7(a, b, c, d, e, f, g)               std::cout << LGPRINT_FMT7(a, b, c, d, e, f, g) << std::endl
+#define LGPRINT8(a, b, c, d, e, f, g, h)            std::cout << LGPRINT_FMT8(a, b, c, d, e, f, g, h) << std::endl
+#define LGPRINT9(a, b, c, d, e, f, g, h, i)         std::cout << LGPRINT_FMT9(a, b, c, d, e, f, g, h, i) << std::endl
+#define LGPRINT10(a, b, c, d, e, f, g, h, i, j)     std::cout << LGPRINT_FMT10(a, b, c, d, e, f, g, h, i, j) << std::endl
 
 //
 // Define a macro LGPRINT which uses C++ 11 variadic macro expansion
