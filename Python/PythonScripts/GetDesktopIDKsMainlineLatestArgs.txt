@@ -1,6 +1,0 @@
---source
-\\atltruck\Products\IDKs\Mainline\DesktopIDKs
---target
-F:\TEMP\DesktopIDKs
---pattern
-*\setup.exe

@@ -1,8 +1,0 @@
---dirpath
-D:\LGTEMP\WatchDirectory
---script
-D:\Labs\Batch\TestBat.bat
---scriptargsfile
-D:\Labs\Python\PythonScripts\WatchDirectoryArgs.txt
---waittime
-12

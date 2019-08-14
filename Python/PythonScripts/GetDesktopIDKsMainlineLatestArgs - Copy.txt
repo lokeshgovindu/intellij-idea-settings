@@ -1,6 +1,0 @@
---source
-\\atltruck\Products\IMAGINE\15.0
---target
-\\ingrnet.com\in\SGI\GeoSpatial\GS1\ERDAS\Products\IMAGINE\15.0
---pattern
-*\*x64.iso
