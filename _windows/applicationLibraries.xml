@@ -1,0 +1,58 @@
+<application>
+  <component name="libraryTable">
+    <library name="Python 2.7 interpreter library">
+      <CLASSES>
+        <root url="file://C:/Rolta/software64/Python27/DLLs" />
+        <root url="file://C:/Rolta/software64/Python27/Lib" />
+        <root url="file://C:/Rolta/software64/Python27/Lib/lib-tk" />
+        <root url="file://C:/Rolta/software64/Python27" />
+        <root url="file://C:/Rolta/software64/Python27/Lib/site-packages" />
+        <root url="file://C:/Rolta/software64/Python27/Lib/site-packages/win32" />
+        <root url="file://C:/Rolta/software64/Python27/Lib/site-packages/win32/lib" />
+        <root url="file://C:/Rolta/software64/Python27/Lib/site-packages/pythonwin" />
+        <root url="file://$USER_HOME$/.IdeaIC2019.1/system/python_stubs/-1640914705" />
+        <root url="file://$APPLICATION_PLUGINS_DIR$/python-ce/helpers/python-skeletons" />
+        <root url="file://$APPLICATION_PLUGINS_DIR$/python-ce/helpers/typeshed/stdlib/2" />
+        <root url="file://$APPLICATION_PLUGINS_DIR$/python-ce/helpers/typeshed/stdlib/2and3" />
+        <root url="file://$APPLICATION_PLUGINS_DIR$/python-ce/helpers/typeshed/third_party/2" />
+        <root url="file://$APPLICATION_PLUGINS_DIR$/python-ce/helpers/typeshed/third_party/2and3" />
+      </CLASSES>
+      <JAVADOC />
+      <SOURCES>
+        <root url="file://C:/Rolta/software64/Python27/DLLs" />
+        <root url="file://C:/Rolta/software64/Python27/Lib" />
+        <root url="file://C:/Rolta/software64/Python27/Lib/lib-tk" />
+        <root url="file://C:/Rolta/software64/Python27" />
+        <root url="file://C:/Rolta/software64/Python27/Lib/site-packages" />
+        <root url="file://C:/Rolta/software64/Python27/Lib/site-packages/win32" />
+        <root url="file://C:/Rolta/software64/Python27/Lib/site-packages/win32/lib" />
+        <root url="file://C:/Rolta/software64/Python27/Lib/site-packages/pythonwin" />
+        <root url="file://$USER_HOME$/.IdeaIC2019.1/system/python_stubs/-1640914705" />
+        <root url="file://$APPLICATION_PLUGINS_DIR$/python-ce/helpers/python-skeletons" />
+        <root url="file://$APPLICATION_PLUGINS_DIR$/python-ce/helpers/typeshed/stdlib/2" />
+        <root url="file://$APPLICATION_PLUGINS_DIR$/python-ce/helpers/typeshed/stdlib/2and3" />
+        <root url="file://$APPLICATION_PLUGINS_DIR$/python-ce/helpers/typeshed/third_party/2" />
+        <root url="file://$APPLICATION_PLUGINS_DIR$/python-ce/helpers/typeshed/third_party/2and3" />
+      </SOURCES>
+    </library>
+    <library name="scala-sdk-2.13.0" type="Scala">
+      <properties>
+        <language-level>Scala_2_13</language-level>
+        <compiler-classpath>
+          <root url="file://C:/Program Files (x86)/scala/lib/scala-compiler.jar" />
+          <root url="file://C:/Program Files (x86)/scala/lib/scala-library.jar" />
+          <root url="file://C:/Program Files (x86)/scala/lib/scala-reflect.jar" />
+        </compiler-classpath>
+      </properties>
+      <CLASSES>
+        <root url="jar://C:/Program Files (x86)/scala/lib/scala-library.jar!/" />
+        <root url="jar://C:/Program Files (x86)/scala/lib/scala-reflect.jar!/" />
+      </CLASSES>
+      <JAVADOC>
+        <root url="jar://C:/Program Files (x86)/scala/api/jars/scala-library-2.13.0-javadoc.jar!/" />
+        <root url="jar://C:/Program Files (x86)/scala/api/jars/scala-reflect-2.13.0-javadoc.jar!/" />
+      </JAVADOC>
+      <SOURCES />
+    </library>
+  </component>
+</application>

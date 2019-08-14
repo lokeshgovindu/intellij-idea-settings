@@ -1,0 +1,10 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<code_scheme name="LoGo_NoSpaces">
+  <XML>
+    <option name="XML_LEGACY_SETTINGS_IMPORTED" value="true" />
+  </XML>
+  <codeStyleSettings language="Python">
+    <option name="KEEP_LINE_BREAKS" value="false" />
+  </codeStyleSettings>
+</code_scheme>
+

@@ -1,0 +1,18 @@
+<templateSet group="output">
+  <template name="soutv1" value="System.out.println(&quot;$EXPR_COPY$ = &quot; + $EXPR$);" description="Prints a value to System.out" toReformat="true" toShortenFQNames="true">
+    <variable name="EXPR" expression="variableOfType(&quot;&quot;)" defaultValue="&quot;expr&quot;" alwaysStopAt="true" />
+    <variable name="EXPR_COPY" expression="escapeString(EXPR)" defaultValue="" alwaysStopAt="false" />
+    <context>
+      <option name="JAVA_STATEMENT" value="true" />
+    </context>
+  </template>
+  <template name="soutv2" value="System.out.println(&quot;$A_COPY$ = &quot; + $A$ + &quot;, $B_COPY$ = &quot; + $B$);" description="Prints 2 values to System.out" toReformat="true" toShortenFQNames="true">
+    <variable name="A" expression="variableOfType(&quot;&quot;)" defaultValue="&quot;A&quot;" alwaysStopAt="true" />
+    <variable name="A_COPY" expression="escapeString(A)" defaultValue="" alwaysStopAt="false" />
+    <variable name="B" expression="variableOfType(&quot;&quot;)" defaultValue="&quot;B&quot;" alwaysStopAt="true" />
+    <variable name="B_COPY" expression="escapeString(B)" defaultValue="" alwaysStopAt="false" />
+    <context>
+      <option name="JAVA_STATEMENT" value="true" />
+    </context>
+  </template>
+</templateSet>

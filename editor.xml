@@ -1,0 +1,13 @@
+<application>
+  <component name="EditorSettings">
+    <option name="languageBreadcrumbsMap">
+      <map>
+        <entry key="JAVA" value="true" />
+      </map>
+    </option>
+    <option name="USE_SOFT_WRAPS" value="" />
+    <option name="IS_VIRTUAL_SPACE" value="true" />
+    <option name="SHOW_BREADCRUMBS_ABOVE" value="true" />
+    <option name="REFRAIN_FROM_SCROLLING" value="true" />
+  </component>
+</application>

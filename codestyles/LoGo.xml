@@ -1,0 +1,11 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<code_scheme name="LoGo">
+  <XML>
+    <option name="XML_LEGACY_SETTINGS_IMPORTED" value="true" />
+  </XML>
+  <codeStyleSettings language="Python">
+    <option name="SPACE_WITHIN_METHOD_CALL_PARENTHESES" value="true" />
+    <option name="SPACE_WITHIN_BRACKETS" value="true" />
+  </codeStyleSettings>
+</code_scheme>
+
